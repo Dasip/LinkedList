@@ -101,8 +101,7 @@ class LinkedList:
             current_box.set_prev(new_box)
             # не забываем увеличить хранящуюся длину списка на 1
             self.len += 1
-        # Если позиция находится вне списка
-        else:
+        else:        # Если позиция находится вне списка
             print("Position out of range")
 
     # Добавление узла в конец списка
@@ -153,40 +152,33 @@ class LinkedList:
         # не забываем уменьшить хранящуюся длину списка на 1
         self.len -= 1
 
-    # Удаление узла с произвольными данными
+    # Удаление узла с определенными данными
     def remove(self, data):
         current_box = self.head
         # поиск нужного узла
         while current_box:
             # Узел найден
             if current_box.get_data() == data:
-
                 # Если узел - единственный в списке - очистить список
                 if self.len == 1:
                     self.head = None
                     self.tail = None
-
                 # Если узел - первый в списке - заменяем первый узел вторым
                 elif current_box == self.head:
                     self.head = current_box.next()
                     self.head.set_prev(None)
-
                 # Если узел - последний - заменяем его предпоследним
                 elif current_box == self.tail:
                     self.tail = current_box.prev()
                     self.tail.set_next(None)
-
                 # Узел в середине списка
                 else:
                     current_box.prev().set_next(current_box.next())
                     current_box.next().set_prev(current_box.prev())
-
                 # Не забываем уменьшить хранящуюся длину списка
                 self.len -= 1
                 return True
-
             current_box = current_box.next()
-
         # Если элемент не был найден, сказать об этом
         print("Element not found")
         return False
@@ -215,15 +207,25 @@ class LinkedList:
             print(current_box)
         return arr[:]
 
+    def invert(self):
+        if self.len > 1:
+            movable = self.head
+            current_box = movable.next()
+
+            while current_box:
+                movable.set_next(current_box.next())
+                current_box.set_next(self.head)
+                self.head = current_box
+                current_box = movable.next()
+
 
 a = LinkedList()
 a.add_last(111)
 a.add_last(123)
 a.add_last(333)
 a.insert_on_position(999, 2)
-a.remove(333)
-a.remove(333)
-b = a.get_iterable()
-print(b)
-
+print(a)
+a.invert()
+print(a)
+a.invert()
 print(a)
