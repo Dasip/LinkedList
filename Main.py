@@ -208,24 +208,82 @@ class LinkedList:
         return arr[:]
 
     def invert(self):
+        # Воспроизводим алгоритм ТОЛЬКО если в списке больше 1 элемента
         if self.len > 1:
+            # в качестве "вагонетки" указываем текущую голову списка
             movable = self.head
+            # "груз" следующий за "вагонеткой" узел будет отодвинут на место головы
             current_box = movable.next()
 
             while current_box:
+                # обновляем ссылку "вагонетки" на следующий после "груза" узел
                 movable.set_next(current_box.next())
+                # вставляем "грузу" ссылку на текущую голову списка
                 current_box.set_next(self.head)
+                # голове списка создаем ссылку на предыдущий узел - "груз"
+                self.head.set_prev(current_box)
+                # Задаем "груз" как голову списка
                 self.head = current_box
+                # И удаляем его ссылку на предыдущий элемент
+                self.head.set_prev(None)
+                # В качестве "груза" берем следующий узел, стоящий справа от вагонетки
                 current_box = movable.next()
+            # Не забываем отметить нашу вагонетку как "хвост" списка
+            self.tail = movable
 
+    def copy(self):
+        # Создаем новый список
+        new_list = LinkedList()
+        # Проходим по всем элементам нашего списка
+        current_box = self.head
+        while current_box:
+            # Создаем новый узел с данными узла из списка
+            new_node = Node(current_box.get_data())
+            # Добавляем новый узел в список
+            new_list.add_last(new_node)
+            current_box = current_box.next()
+        # Возвращаем список заполненный такими же узлами, как и у текущего
+        return new_list
+
+#==========================#       TESTING  FACILITY       #==========================#
 
 a = LinkedList()
-a.add_last(111)
-a.add_last(123)
-a.add_last(333)
+# Добавляем элемент в конец "а"
+a.add_last(111) # 111
+print(a)
+# Добавляем элемент в начало "а"
+a.add_first(123)    # 123 111
+print(a)
+# Добавляем элемент в конец "а"
+a.add_last(333) # 123 111 333
+print(a)
+
+
+# Делаем "b" - копию "а"
+b = a.copy()
+print("a copied")
+
+# Вставляем на 2 позицию (нумерация с 0) "а" элемент "999"
 a.insert_on_position(999, 2)
-print(a)
+print(f"a: {a}")    # 123 111 999 333 (поскольку первый элемент считается в моей реализации нулевым
+print(f"b: {b}")    # 123 111 333
+# Инвертируем "a"
 a.invert()
-print(a)
-a.invert()
-print(a)
+print(f"a: {a}")    # 333 999 111 123
+print(f"b: {b}")    # 123 111 333
+# Добавляем элемент в конец "а"
+a.add_last(111)
+print(f"a: {a}")    # 333 999 111 123 111
+print(f"b: {b}")    # 123 111 333
+# Удаляем из "а" узел со значением "111"
+a.remove(111)
+print(f"a: {a}")     # 333 999 123 111
+print(f"b: {b}")    # 123 111 333
+# Вставляем на 5 позицию (нумерация с 0) "а" элемент "10"
+a.insert_on_position(10, 5) # Position out of range
+# очищаем "a"
+a.clear()
+print(f"a: {a}")     # []
+print(f"b: {b}")     # 123 111 333
+
+#==========================#    END OF TESTING FACILITY    #==========================#
